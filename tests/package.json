@@ -1,0 +1,12 @@
+{
+  "name": "portfolio-qa-tests",
+  "private": true,
+  "description": "Automated browser checks for the portfolio site. Not needed to view or publish the site.",
+  "scripts": {
+    "test": "node --test-reporter=spec qa.spec.js",
+    "serve": "node serve.js"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}
