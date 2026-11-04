@@ -44,9 +44,12 @@
   /* ---------- Render content ---------- */
 
   function renderContent() {
-    document.title = content.name + " — " + content.role;
+    document.title = content.role ? content.name + " — " + content.role : content.name;
     var meta = document.querySelector('meta[name="description"]');
-    if (meta && content.description) meta.setAttribute("content", content.description);
+    var description = content.description ||
+      ("Portfolio of " + content.name + (content.role ? ", " + content.role : "") + ". " + (content.pitch || "")).trim();
+    if (meta) meta.setAttribute("content", description);
+    setFavicon(content.name);
 
     var simple = { name: content.name, role: content.role, pitch: content.pitch };
     document.querySelectorAll("[data-content]").forEach(function (node) {
@@ -63,7 +66,7 @@
     var avatar = document.querySelector('[data-render="avatar"]');
     if (avatar && content.avatar) {
       avatar.src = content.avatar.src;
-      avatar.alt = content.avatar.alt || "";
+      avatar.alt = content.avatar.alt || "Portrait of " + content.name;
     }
 
     fill("skills", function (target) {
@@ -87,7 +90,7 @@
         if (project.image && project.image.src) {
           var img = el("img", "project-image");
           img.src = project.image.src;
-          img.alt = project.image.alt || "";
+          img.alt = project.image.alt || "Preview of " + project.title;
           img.width = 640;
           img.height = 360;
           img.loading = "lazy";
@@ -139,6 +142,19 @@
 
     var year = document.getElementById("year");
     if (year) year.textContent = String(new Date().getFullYear());
+  }
+
+  // Builds a favicon showing the first letter of your name.
+  function setFavicon(name) {
+    var link = document.querySelector('link[rel="icon"]');
+    var letter = (name || "").trim().charAt(0).toUpperCase();
+    if (!link || !letter) return;
+    var safe = letter.replace(/[<>&"']/g, "");
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">' +
+      '<rect width="64" height="64" rx="14" fill="#0b6b62"/>' +
+      '<text x="32" y="44" text-anchor="middle" font-family="Georgia, serif" font-size="34" font-weight="700" fill="#ffffff">' +
+      safe + "</text></svg>";
+    link.href = "data:image/svg+xml," + encodeURIComponent(svg);
   }
 
   function prettyUrl(url) {

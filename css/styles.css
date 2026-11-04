@@ -243,7 +243,7 @@ main:focus { outline: none; }
 
 /* Mobile: the list is a dropdown panel, hidden until the menu is opened. */
 @media (max-width: 47.99rem) {
-  .nav-list {
+  .js .nav-list {
     display: none;
     position: absolute;
     top: 100%;
@@ -267,6 +267,20 @@ main:focus { outline: none; }
   .nav-list a { padding: 0.5rem 0.85rem; }
   .nav-list a[aria-current="true"] { box-shadow: inset 0 -2px 0 var(--accent); border-radius: 0.5rem 0.5rem 0 0; }
 }
+
+/* Without JavaScript: no menu or theme buttons; links show as a plain row. */
+.no-js .menu-toggle,
+.no-js .theme-toggle { display: none; }
+@media (max-width: 47.99rem) {
+  .no-js .header-inner { flex-wrap: wrap; padding-top: 0.5rem; padding-bottom: 0.25rem; }
+  .no-js .site-nav { width: 100%; }
+  .no-js .nav-list { display: flex; flex-wrap: wrap; margin: 0 -0.75rem; }
+  .no-js .nav-list a { padding: 0.5rem 0.75rem; }
+}
+.no-js-note { color: var(--text-muted); font-style: italic; }
+.js .no-js-note,
+.no-js .hero-greeting { display: none; }
+[data-content]:empty { display: none; }
 
 /* ---------- Buttons ---------- */
 .button {
@@ -480,7 +494,15 @@ section[id] { scroll-margin-top: var(--header-h); }
 }
 .site-footer p { margin: 0; }
 
-.noscript { padding: 1rem var(--gutter); text-align: center; }
+.noscript {
+  margin: 0;
+  padding: 0.85rem var(--gutter);
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  font-weight: 600;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
 
 /* ---------- Motion ---------- */
 @media (prefers-reduced-motion: no-preference) {

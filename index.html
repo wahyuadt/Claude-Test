@@ -1,16 +1,18 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Title and description are filled in from js/content.js. These are fallbacks
-       for search engines and link previews; update them too when you go live. -->
-  <title>Your Name — Frontend Developer</title>
-  <meta name="description" content="Portfolio of Your Name, a frontend developer who builds fast, accessible websites.">
+  <!-- No personal details here: the title, description and favicon are set from
+       js/content.js. These generic values are only used if JavaScript is off. -->
+  <title>Portfolio</title>
+  <meta name="description" content="Personal portfolio: projects, skills and contact details.">
   <meta name="color-scheme" content="light dark">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/styles.css">
   <script>
+    // Mark that JavaScript is running (styles in css/styles.css use .no-js / .js).
+    document.documentElement.className = "js";
     // Apply a saved manual theme choice before the page paints (avoids a flash).
     try {
       var savedTheme = localStorage.getItem("theme");
@@ -25,7 +27,7 @@
 
   <header class="site-header">
     <div class="container header-inner">
-      <a class="brand" href="#top" data-content="name">Your Name</a>
+      <a class="brand" href="#top" data-content="name">Portfolio</a>
 
       <div class="header-actions">
         <button class="theme-toggle" type="button" aria-label="Switch to dark theme">
@@ -50,11 +52,16 @@
   </header>
 
   <main id="main" tabindex="-1">
+    <noscript>
+      <p class="noscript">This portfolio needs JavaScript to show its content. Please turn JavaScript on and reload the page.</p>
+    </noscript>
+
+    <!-- Every piece of text in this page comes from js/content.js. Edit that file, not this one. -->
     <section id="top" class="hero" aria-labelledby="hero-title">
       <div class="container">
-        <p class="eyebrow" data-content="role">Frontend Developer</p>
-        <h1 id="hero-title" class="hero-title"><span class="hero-greeting">Hi, I'm</span> <span data-content="name">Your Name</span></h1>
-        <p class="hero-pitch" data-content="pitch">I build fast, accessible websites that are a pleasure to use.</p>
+        <p class="eyebrow" data-content="role"></p>
+        <h1 id="hero-title" class="hero-title"><span class="hero-greeting">Hi, I'm</span> <span data-content="name">Portfolio</span></h1>
+        <p class="hero-pitch" data-content="pitch"></p>
         <div class="hero-actions">
           <a class="button button-primary" href="#projects">View projects</a>
           <a class="button button-secondary" href="#contact">Contact me</a>
@@ -66,23 +73,23 @@
       <div class="container about-grid">
         <div>
           <h2 id="about-title" class="section-title">About</h2>
-          <div class="about-text" data-render="about"></div>
+          <div class="about-text" data-render="about"><p class="no-js-note">The bio appears here when JavaScript is on.</p></div>
         </div>
-        <img class="avatar" data-render="avatar" src="assets/avatar.svg" alt="Placeholder portrait" width="200" height="200">
+        <img class="avatar" data-render="avatar" src="assets/avatar.svg" alt="Portrait placeholder" width="200" height="200">
       </div>
     </section>
 
     <section id="skills" class="section section-alt" aria-labelledby="skills-title">
       <div class="container">
         <h2 id="skills-title" class="section-title">Skills</h2>
-        <div class="skills-grid" data-render="skills"></div>
+        <div class="skills-grid" data-render="skills"><p class="no-js-note">Skills appear here when JavaScript is on.</p></div>
       </div>
     </section>
 
     <section id="projects" class="section" aria-labelledby="projects-title">
       <div class="container">
         <h2 id="projects-title" class="section-title">Projects</h2>
-        <ul class="projects-grid" data-render="projects"></ul>
+        <ul class="projects-grid" data-render="projects"><li class="no-js-note">Projects appear here when JavaScript is on.</li></ul>
       </div>
     </section>
 
@@ -90,20 +97,16 @@
       <div class="container contact">
         <h2 id="contact-title" class="section-title">Contact</h2>
         <p class="contact-blurb" data-render="contact-blurb"></p>
-        <ul class="contact-links" data-render="contact-links"></ul>
+        <ul class="contact-links" data-render="contact-links"><li class="no-js-note">Contact links appear here when JavaScript is on.</li></ul>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p>&copy; <span id="year">2026</span> <span data-content="name">Your Name</span></p>
+      <p>&copy; <span id="year">2026</span> <span data-content="name"></span></p>
     </div>
   </footer>
-
-  <noscript>
-    <p class="noscript">Turn on JavaScript to see the full portfolio.</p>
-  </noscript>
 
   <!-- Content first, then the code that renders it. Loaded at the end of the
        body so the page renders in one pass without an empty flash. -->

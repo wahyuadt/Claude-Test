@@ -3,7 +3,9 @@
    ==========================================================================
    This is the ONLY file you need to change to make the site yours.
    Everything on the page (name, role, bio, skills, projects, links) is
-   read from the SITE_CONTENT object below.
+   read from the SITE_CONTENT object below. The browser tab title, the
+   search description, the image alt text and the favicon letter are all
+   built from your name automatically, so you only type your name once.
 
    How to edit:
    1. Replace every value marked "PLACEHOLDER" with your own details.
@@ -24,8 +26,9 @@ window.SITE_CONTENT = {
   name: "Your Name",                         // PLACEHOLDER
   role: "Frontend Developer",                // PLACEHOLDER
   pitch: "I build fast, accessible websites that are a pleasure to use.", // PLACEHOLDER
-  // Shown in search results and link previews (about 150 characters).
-  description: "Portfolio of Your Name, a frontend developer who builds fast, accessible websites.", // PLACEHOLDER
+  // Optional summary for search results. Leave it as "" and it is built
+  // automatically from your name, role and pitch above.
+  description: "",
 
   // --- About -------------------------------------------------------------
   about: [                                   // PLACEHOLDER: 2–3 sentences, one paragraph per line
@@ -34,7 +37,7 @@ window.SITE_CONTENT = {
   ],
   avatar: {
     src: "assets/avatar.svg",                // PLACEHOLDER: e.g. "assets/me.jpg"
-    alt: "Placeholder portrait of Your Name" // PLACEHOLDER: describe your photo
+    alt: ""                                  // Optional: describe your photo. Leave "" for "Portrait of <your name>".
   },
 
   // --- Skills (grouped) ----------------------------------------------------
