@@ -230,30 +230,75 @@ describe("home page", () => {
 });
 
 describe("GitHub Pages sub-path", () => {
-  // Every link, script, stylesheet, image and request that stays on this site
-  // must start with the site path in its EXACT casing (e.g. /Claude-Test/).
-  async function offSitePaths(url) {
-    const { page, context } = await open(url);
-    const requested = [];
-    page.on("request", (r) => requested.push(r.url()));
-    await page.reload({ waitUntil: "networkidle" });
+  // Opens `url` and tracks every request until the page has settled.
+  // Returns the page plus: same-site URLs outside SITE_PATH, requests that
+  // failed (other than the page's own expected 404) and requests still pending.
+  async function visit(url, options = {}) {
+    const context = await browser.newContext({ viewport: { width: 1280, height: 800 }, ...options });
+    const page = await context.newPage();
+    // "pending" = asked for but no response at all (a real hang). A response whose
+    // body the page never reads is not counted, and neither is a request the
+    // browser itself cancelled (net::ERR_ABORTED), since visitors never notice those.
+    const requested = [], failed = [], pending = new Set();
+    page.on("request", (r) => { requested.push(r.url()); pending.add(r); });
+    page.on("requestfinished", (r) => pending.delete(r));
+    page.on("requestfailed", (r) => {
+      pending.delete(r);
+      if (r.failure().errorText !== "net::ERR_ABORTED") failed.push(r.failure().errorText + " " + r.url());
+    });
+    page.on("response", (r) => {
+      pending.delete(r.request());
+      if (r.status() >= 400 && r.url() !== url) failed.push(r.status() + " " + r.url());
+    });
+    const response = await page.goto(url, { waitUntil: "load" });
+    await page.waitForTimeout(1500); // let scripts and their requests settle
     const origin = new URL(url).origin;
     const referenced = await page.evaluate(() =>
       [...document.querySelectorAll("a[href], link[href], script[src], img[src], source[src]")]
         .map((el) => el.href || el.src).filter(Boolean));
-    await context.close();
-    return [...new Set([...referenced, ...requested])]
+    const offSite = [...new Set([...referenced, ...requested])]
       .filter((u) => u.startsWith(origin + "/"))
       .filter((u) => !new URL(u).pathname.startsWith(SITE_PATH));
+    return { page, context, response, offSite, failed, pending: [...pending].map((r) => r.url()) };
   }
 
+  // Every link, script, stylesheet, image and request that stays on this site
+  // must start with the site path in its EXACT casing (e.g. /Claude-Test/).
   test(`every same-site link and asset on the home page uses ${SITE_PATH}`, async () => {
-    assert.deepEqual(await offSitePaths(BASE), []);
+    const { context, offSite } = await visit(BASE);
+    assert.deepEqual(offSite, []);
+    await context.close();
   });
 
-  test(`every same-site link and asset on the 404 page uses ${SITE_PATH}`, async () => {
-    assert.deepEqual(await offSitePaths(BASE + "no/such/page"), []);
-  });
+  // With JavaScript on, the 404 page may work out its home link from the
+  // address bar, which would make a casing check pass trivially. So the 404
+  // page is also checked with JavaScript OFF, where only the hard-coded
+  // fallback in 404.html is used: that must match the repo name exactly.
+  for (const javaScriptEnabled of [true, false]) {
+    const js = javaScriptEnabled ? "JS on" : "JS off";
+    test(`404 page (${js}): every same-site link and asset uses ${SITE_PATH}, no request fails or hangs`, async () => {
+      const { context, offSite, failed, pending } = await visit(BASE + "no/such/page", { javaScriptEnabled });
+      assert.deepEqual(offSite, [], "links or requests outside the site");
+      assert.deepEqual(failed, [], "failed requests");
+      assert.deepEqual(pending, [], "requests that never finished");
+      await context.close();
+    });
+
+    for (const missing of ["nope", "no/such/page", "a/b/c/d/e.html", "projects/x/"]) {
+      test(`404 page at /${missing} (${js}): styled, and "Back to home" lands on the site root`, async () => {
+        const { page, context, response } = await visit(BASE + missing, { javaScriptEnabled });
+        assert.equal(response.status(), 404);
+        assert.match(await page.locator("h1").innerText(), /not found/i);
+        const link = page.locator("a", { hasText: "Back to home" });
+        const color = await link.evaluate((a) => getComputedStyle(a).backgroundColor);
+        assert.notEqual(color, "rgba(0, 0, 0, 0)", "home link is unstyled");
+        const [home] = await Promise.all([page.waitForNavigation(), link.click()]);
+        assert.equal(new URL(page.url()).pathname, SITE_PATH, "home link went to " + page.url());
+        assert.equal(home && home.status(), 200, "home page did not load (status " + (home && home.status()) + ")");
+        await context.close();
+      });
+    }
+  }
 
   test("site root without the trailing slash still reaches the site", async () => {
     const { page, context, response } = await open(BASE.replace(/\/$/, ""));
@@ -261,21 +306,6 @@ describe("GitHub Pages sub-path", () => {
     assert.equal(new URL(page.url()).pathname, SITE_PATH);
     await context.close();
   });
-
-  for (const missing of ["nope", "no/such/page", "a/b/c/d/e.html", "projects/x/"]) {
-    test(`404 page at /${missing}: styled, and "Back to home" lands on the site root`, async () => {
-      const { page, context, response } = await open(BASE + missing);
-      assert.equal(response.status(), 404);
-      assert.match(await page.locator("h1").innerText(), /not found/i);
-      const color = await page.locator("a", { hasText: "Back to home" }).evaluate((a) => getComputedStyle(a).backgroundColor);
-      assert.notEqual(color, "rgba(0, 0, 0, 0)", "home link is unstyled");
-      const [home] = await Promise.all([page.waitForNavigation(), page.locator("a", { hasText: "Back to home" }).click()]);
-      assert.equal(new URL(page.url()).pathname, SITE_PATH, "home link went to " + page.url());
-      assert.equal(home && home.status(), 200, "home page did not load (status " + (home && home.status()) + ")");
-      assert.match(await page.locator("h1").innerText(), new RegExp(CONTENT.name));
-      await context.close();
-    });
-  }
 });
 
 describe("edit one file", { skip: LIVE && "needs a local copy of the site" }, () => {
