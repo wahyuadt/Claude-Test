@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Title and description are filled in from js/content.js. These are fallbacks
+       for search engines and link previews; update them too when you go live. -->
+  <title>Your Name — Frontend Developer</title>
+  <meta name="description" content="Portfolio of Your Name, a frontend developer who builds fast, accessible websites.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    // Apply a saved manual theme choice before the page paints (avoids a flash).
+    try {
+      var savedTheme = localStorage.getItem("theme");
+      if (savedTheme === "light" || savedTheme === "dark") {
+        document.documentElement.setAttribute("data-theme", savedTheme);
+      }
+    } catch (e) { /* storage unavailable: follow the system theme */ }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" data-content="name">Your Name</a>
+
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+          <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M1.5 12h3M19.5 12h3M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></svg>
+        </button>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
+          <span class="menu-toggle-bars" aria-hidden="true"></span>
+          <span class="menu-toggle-label">Menu</span>
+        </button>
+      </div>
+
+      <nav class="site-nav" aria-label="Primary">
+        <ul id="primary-nav" class="nav-list">
+          <li><a href="#about">About</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section id="top" class="hero" aria-labelledby="hero-title">
+      <div class="container">
+        <p class="eyebrow" data-content="role">Frontend Developer</p>
+        <h1 id="hero-title" class="hero-title"><span class="hero-greeting">Hi, I'm</span> <span data-content="name">Your Name</span></h1>
+        <p class="hero-pitch" data-content="pitch">I build fast, accessible websites that are a pleasure to use.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#projects">View projects</a>
+          <a class="button button-secondary" href="#contact">Contact me</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="section" aria-labelledby="about-title">
+      <div class="container about-grid">
+        <div>
+          <h2 id="about-title" class="section-title">About</h2>
+          <div class="about-text" data-render="about"></div>
+        </div>
+        <img class="avatar" data-render="avatar" src="assets/avatar.svg" alt="Placeholder portrait" width="200" height="200">
+      </div>
+    </section>
+
+    <section id="skills" class="section section-alt" aria-labelledby="skills-title">
+      <div class="container">
+        <h2 id="skills-title" class="section-title">Skills</h2>
+        <div class="skills-grid" data-render="skills"></div>
+      </div>
+    </section>
+
+    <section id="projects" class="section" aria-labelledby="projects-title">
+      <div class="container">
+        <h2 id="projects-title" class="section-title">Projects</h2>
+        <ul class="projects-grid" data-render="projects"></ul>
+      </div>
+    </section>
+
+    <section id="contact" class="section section-alt" aria-labelledby="contact-title">
+      <div class="container contact">
+        <h2 id="contact-title" class="section-title">Contact</h2>
+        <p class="contact-blurb" data-render="contact-blurb"></p>
+        <ul class="contact-links" data-render="contact-links"></ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <span id="year">2026</span> <span data-content="name">Your Name</span></p>
+    </div>
+  </footer>
+
+  <noscript>
+    <p class="noscript">Turn on JavaScript to see the full portfolio.</p>
+  </noscript>
+
+  <!-- Content first, then the code that renders it. Loaded at the end of the
+       body so the page renders in one pass without an empty flash. -->
+  <script src="js/content.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
