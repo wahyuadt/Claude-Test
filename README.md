@@ -44,24 +44,30 @@ Optional extras:
 3. Under **Build and deployment**, set **Source** to **Deploy from a branch**.
 4. Choose branch **main** and folder **/ (root)**, then click **Save**.
 5. Wait a minute or two, then refresh the page. GitHub shows your site's address,
-   for example `https://your-username.github.io/claude-test/`.
+   for example `https://your-username.github.io/Claude-Test/`.
 
-### One setting to check: the 404 page
+### Good to know: addresses are case-sensitive
+
+GitHub Pages uses your repository name **exactly** in the address, capital
+letters included. A repository named `Claude-Test` lives at
+`https://your-username.github.io/Claude-Test/`; typing `/claude-test/` shows
+GitHub's "There isn't a GitHub Pages site here" page instead.
+
+### The 404 page
 
 GitHub shows `404.html` whenever someone visits a page that doesn't exist.
-It needs to know which folder your site lives in, so its "Back to home" link works.
-Open `404.html` and find this line near the top:
+Its "Back to home" link finds your home page automatically, so you don't need
+to change anything, even if you rename the repository.
+
+The fixed link written in `404.html` is a backup, used when JavaScript is off
+or the automatic check can't find your home page. If you rename the
+repository, update it to match the new name exactly (same capitals):
 
 ```
-<base href="/claude-test/">
+<a id="home-link" href="/Claude-Test/">Back to home</a>
 ```
 
-- Site at `https://your-username.github.io/claude-test/` (repository named
-  `claude-test`): leave it as it is.
-- Repository with a different name, for example `portfolio`: change it to
-  `<base href="/portfolio/">`.
-- Repository named `your-username.github.io` (site at the top level): change it
-  to `<base href="/">`.
+Use `href="/"` if your repository is named `your-username.github.io`.
 
 ## What's in this folder
 
