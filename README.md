@@ -59,9 +59,9 @@ GitHub shows `404.html` whenever someone visits a page that doesn't exist.
 Its "Back to home" link finds your home page automatically, so you don't need
 to change anything, even if you rename the repository.
 
-Only visitors with JavaScript turned off use the fixed link written in
-`404.html`. If you rename the repository, update it to match the new name
-exactly (same capitals):
+The fixed link written in `404.html` is a backup, used when JavaScript is off
+or the automatic check can't find your home page. If you rename the
+repository, update it to match the new name exactly (same capitals):
 
 ```
 <a id="home-link" href="/Claude-Test/">Back to home</a>

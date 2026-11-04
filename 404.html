@@ -43,18 +43,22 @@
   </main>
   <script>
     // Find the site's home page from the current address.
-    // A project site lives at /REPO-NAME/ (first part of the path, with the
-    // exact capitals the visitor used to reach this page); a user site or
-    // custom domain lives at /. We guess the first, then check it exists.
+    // GitHub Pages only shows this page under the site's own folder, so the
+    // first part of the path (e.g. "/Claude-Test/", with the exact capitals the
+    // visitor used) is the home page. A quick HEAD request confirms it; if the
+    // server says it doesn't exist, we fall back to the fixed link written
+    // above. We never switch to "/" on our own.
     (function () {
       var link = document.getElementById("home-link");
+      var fallback = link.getAttribute("href");
       var first = location.pathname.split("/")[1];
-      var guess = first ? "/" + first + "/" : "/";
+      if (!first) return;
+      var guess = "/" + first + "/";
       link.href = guess;
-      if (guess === "/" || !window.fetch) return;
-      fetch(guess)
-        .then(function (res) { if (!res.ok) link.href = "/"; })
-        .catch(function () { /* offline: keep the guess */ });
+      if (guess === fallback || !window.fetch) return;
+      fetch(guess, { method: "HEAD" })
+        .then(function (res) { if (!res.ok) link.href = fallback; })
+        .catch(function () { /* network error: keep the guess */ });
     })();
   </script>
 </body>
